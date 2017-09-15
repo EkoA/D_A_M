@@ -102,7 +102,7 @@
 														<label for="cost" class="col-md-2 control-label">Cost (per Item)</label>
 
 													<div class="col-md-10">
-																<input id="cost" type="number" class="form-control" name="cost"  value="1" min="1" required>
+																<input id="cost" type="number" class="form-control" name="cost" step="any" value="1" min="1" required>
 
 																@if ($errors->has('cost'))
 																		<span class="help-block">

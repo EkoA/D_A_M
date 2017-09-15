@@ -63,7 +63,7 @@ span{color:#7967A7;}
                 </ul>
 
 
-                <form role="search" class="navbar-left app-search pull-left hidden-xs" method="get" action="{{ route('search.now') }}">
+                <form role="search" class="navbar-left app-search pull-left hidden-xs" method="get" action="{{ route('items.search') }}">
                      <input type="text" placeholder="Search..." class="form-control" name="search" required>
                      <a href=""><i class="fa fa-search"></i></a>
                 </form>

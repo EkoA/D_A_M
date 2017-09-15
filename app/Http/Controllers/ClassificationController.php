@@ -39,7 +39,8 @@ class ClassificationController extends Controller
         }
 
         $user = Auth::user()->role_id;
-        if($user != "HOF")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
            return view('errors.404');
         }
@@ -102,7 +103,8 @@ class ClassificationController extends Controller
         }
 
         $user = Auth::user()->role_id;
-        if($user != "HOF")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
             return view('errors.404');
         }
@@ -127,7 +129,8 @@ class ClassificationController extends Controller
         }
         //checking user role
         $check = Auth::user()->role_id;
-        if($check!="HOF")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
             return view('errors.404');
         }

@@ -78,11 +78,36 @@ Route::get('/users/addstaff/', [
 	'as' => 'users.addstaff'
 ]);
 
+Route::get('/users/viewstaff/', [
+	'uses' => 'UserController@viewstaff',
+	'as' => 'users.viewstaff'
+]);
+
+Route::get('/users/resetpassword/{id}', [
+	'uses' => 'UserController@resetpassword',
+	'as' => 'users.resetpassword'
+]);
+
+Route::get('/users/activatemail/{id}', [
+	'uses' => 'UserController@activatemail',
+	'as' => 'users.activatemail'
+]);
+
 
 //Routes for Items
+Route::get('/items/reports/', [
+	'uses' => 'ItemController@reports',
+	'as' => 'items.reports'
+]);
+
+Route::post('/items/reportgen/', [
+	'uses' => 'ItemController@reportgen',
+	'as' => 'items.reportgen'
+]);
+
 Route::get('/items/search/', [
 	'uses' => 'ItemController@search',
-	'as' => 'search.now'
+	'as' => 'items.search'
 ]);
 
 Route::get('/items/depreciate/', [
@@ -174,6 +199,11 @@ Route::get('/asset/{id}/edit', [
 	'as' => 'asset.edit'
 ]);
 
+Route::put('/asset/massdecision/', [
+	'uses' => 'ItemController@massdecision',
+	'as' => 'asset.massdecision'
+]);
+
 
 //Routes for Finance
 Route::get('/finances/items/', [
@@ -199,6 +229,11 @@ Route::get('/finances/pending/', [
 Route::get('/finances/approved/', [
 	'uses' => 'FinanceController@approved',
 	'as' => 'finances.approved'
+]);
+
+Route::post('/finances/generateReport/', [
+	'uses' => 'FinanceController@generateReport',
+	'as' => 'finances.generateReport'
 ]);
 
 Route::get('/finances/{id}/decline/', [
@@ -242,3 +277,5 @@ Route::resource('/orders', 'OrderController');
 Route::resource('/users', 'UserController');
 
 Route::resource('/finances', 'FinanceController');
+
+Route::resource('/vendors', 'VendorController');

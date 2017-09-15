@@ -1,6 +1,6 @@
-@extends('layouts.items')
+@extends('layouts.vendors')
 @section('title')
-	All Items
+	View Vendors
 @stop
 
 @section('body')
@@ -19,7 +19,7 @@
 												<li><a href="#">View Staff</a></li>>
 						</ul>
 				</div>-->
-				<h4 class="page-title">All Registered Assets</h4>
+				<h4 class="page-title">All Registered Vendors</h4>
 				<ol class="breadcrumb">
 
 				</ol>
@@ -32,26 +32,19 @@
 				<div class="card-box table-responsive">
 					<table id="datatable" class="table table-hover">
 
-					@if (empty($items))
-						<p>There are no registered assets yet</p>
+					@if (empty($vendors))
+						<p>There are no registered vendors yet</p>
 					@else
 							<thead>
-							<tr><th>&nbsp;Asset Number&nbsp;</th><th>&nbsp;Item Type&nbsp;</th><th>&nbsp;Date Registered</th></tr>
+							<tr><th>&nbsp;Vendor Name&nbsp;</th><th>&nbsp;Product/Service&nbsp;</th><th>&nbsp;Date Registered</th></tr>
 							</thead>
-					@foreach($items as $item)
+					@foreach($vendors as $vendor)
 
-							<tr onclick="document.location='{{route('items.show',$item->id)}}'" style="cursor:hand;"><td>&nbsp;{{$item->asset_number}}&nbsp;</td><td>&nbsp;{{$item->item}}&nbsp;</td><td>&nbsp;{{$item->created_at}}</a></td></tr>
+							<tr onclick="document.location='{{route('vendors.show',$vendor->id)}}'" style="cursor:hand;"><td>&nbsp;{{$vendor->vendor_name}}&nbsp;</td><td>&nbsp;{{$vendor->product_service}}&nbsp;</td><td>&nbsp;{{$vendor->created_at}}</a></td></tr>
 
 					@endforeach
 					@endif
 					</table>
-
-					<form class="form-horizontal" role="form" method="POST" action="{{ route('items.generateReport') }}">
-						{{ csrf_field() }}
-						<input type="hidden" name="report_details" value="{{$items}}">
-						<input type="hidden" name="report_type" value="general">
-						<input class="btn btn-default" type="submit" name="Generate Report" value="Generate Report">
-					</form>
 
 					</div>
 				</div>

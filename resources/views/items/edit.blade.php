@@ -75,10 +75,6 @@
                             </div>
                         </div>
 
-                        <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
-                        	<center><h4>Current Department: <span>{{$item->department}}</span></h4></center>
-                        </div>
-
                          <div class="form-group{{ $errors->has('department') ? ' has-error' : '' }}">
                             <label for="department" class="col-sm-2 control-label">Department</label>
 														<div class="col-sm-10">
@@ -87,6 +83,7 @@
 																	 @if (empty($departments))
 																	 <option value="None">There are no departments yet</option>
 																	 @else
+																	 <option value="{{$item->department}}" select="selected">{{$item->department}}</option>
 																	 @foreach($departments as $department)
 																	 <option value="{{$department->dept_name}}">{{$department->dept_name}}</option>
 																	 @endforeach
@@ -180,15 +177,12 @@
 																												</div>
                                                 </div>
 
-                        <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
-                            <center><h4>Current Depreciation Formula: <span>{{$item->depreciationformula}}</span></h4></center>
-                        </div>
-
                                             <div class="form-group{{ $errors->has('depreciationformula') ? ' has-error' : '' }}">
                                                      <label for="depreciationformula" class="col-md-2 control-label">Depreciation Formula</label>
                                                      <div class="col-sm-10">
                                                      <span>
                                                             <select name ="depreciationformula" id="depreciationformula" class="form-control">
+																																		<option value="{{$item->depreciationformula}}" selected="selected">{{$item->depreciationformula}}</option>
                                                                     <option value="STRAIGHT LINE METHOD">STRAIGHT LINE METHOD</option>
                                                                     <option value="REDUCING BALANCE METHOD">REDUCING BALANCE METHOD</option>
                                                                     <option value="SUM OF YEAR METHOD">SUM OF YEAR METHOD</option>
@@ -229,10 +223,6 @@
                             </div>
                         </div>
 
-                        <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
-                            <center><h4>Current Classification: <span>{{$item->classification}}</span></h4></center>
-                        </div>
-
                         <div class="form-group{{ $errors->has('role_id') ? ' has-error' : '' }}">
                             <label for="classification" class="col-md-2 control-label">Classification</label>
                             <div class="col-md-10">
@@ -241,6 +231,7 @@
                                     @if (empty($classifications))
                                     <option value="There are no registered assets yet">There are no registered assets yet</option>
                                     @else
+																		<option value="{{$item->classification}}" selected="selected">{{$item->classification}}</option>
                                     @foreach($classifications as $classification)
                                     <option value="{{$classification->class_name}}">{{$classification->class_name}}</option>
                                     @endforeach

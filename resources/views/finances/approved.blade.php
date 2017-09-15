@@ -45,6 +45,13 @@
 	@endif
 </table>
 
+<form class="form-horizontal" role="form" method="POST" action="{{ route('finances.generateReport') }}">
+	{{ csrf_field() }}
+	<input type="hidden" name="report_details" value="">
+	<input type="hidden" name="report_type" value="general">
+	<input class="btn btn-default" type="submit" name="Generate Report" value="Generate Report">
+</form>
+
 </div>
 </div>
 <div class="col-sm-2"></div>

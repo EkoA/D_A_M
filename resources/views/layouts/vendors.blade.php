@@ -52,24 +52,34 @@
                   </div>
 
                   <ul class="nav navbar-nav hidden-xs">
+                    @if(Auth::user()->role_id == "HOF")
                       <li><a href="{{ url('/finances/approved') }}" style="font-family: inherit;
 ">&nbsp;&nbsp;&nbsp;Approved Requests</a></li>
                        <li><a href="{{ url('/finances/pending') }}" style="font-family: inherit;
 ">&nbsp;&nbsp;&nbsp;Pending Requests</a></li>
+                    @else
+                    <li><a href="{{ url('/basic/sent') }}" style="font-family: inherit;
+">&nbsp;&nbsp;&nbsp;View Requests</a></li>
+                    <li><a href="{{ url('/orders/create') }}" style="font-family: inherit;
+">&nbsp;&nbsp;&nbsp;Make Request</a></li>
+                    @endif
                        <li><a href="{{ url('finances/items') }}" style="font-family: inherit;
 ">&nbsp;&nbsp;&nbsp;Manage Assets</a></li>
                        <li><a href="{{ url('vendors/') }}" style="font-family: inherit;
 ">&nbsp;&nbsp;&nbsp;Manage Vendors</a></li>
                   </ul>
 
+                  @if(Auth::user()->role_id == "HOF")
                   <form role="search" class="navbar-left app-search pull-left hidden-xs" method="get" action="{{ route('orders.search') }}">
                        <input type="text" placeholder="Search..." class="form-control" name="search" required>
                        <a href=""><i class="fa fa-search"></i></a>
                   </form>
+                  @endif
 
                   <ul class="nav navbar-nav navbar-right pull-right">
                       <li class="dropdown top-menu-item-xs">
                           <a href="#" data-target="#" class="dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-expanded="true">
+
                           </a>
                       </li>
                       <li class="dropdown top-menu-item-xs">
@@ -88,17 +98,16 @@
           <div id="sidebar-menu">
               <ul>
                   <li class="text-muted menu-title">Navigation</li>
+                  @if(Auth::user()->role_id == "HOF")
                   <li class="has_sub">
                       <a href="{{ url('/finances') }}" class="waves-effect"><i class="ti-home"></i> Dashboard </a>
                   </li>
+                  @endif
                   <li class="has_sub">
-                      <a href="{{ url('/finances/approved') }}" class="waves-effect"><i class="ti-pencil-alt"></i>Approved Requests</a>
+                      <a href="{{ url('/vendors/') }}" class="waves-effect"><i class="ti-pencil-alt"></i>View Vendors</a>
                   </li>
                   <li class="has_sub">
-                      <a href="{{ url('/finances/pending') }}" class="waves-effect"><i class="ti-pencil-alt"></i>Pending Requests</a>
-                  </li>
-                  <li class="has_sub">
-                      <a href="{{ url('/finances/order') }}" class="waves-effect"><i class="fa fa-plus"></i>Request Item</a>
+                      <a href="{{ url('/vendors/create') }}" class="waves-effect"><i class="ti-plus"></i>Add Vendor</a>
                   </li>
               </ul>
               <div class="clearfix"></div>

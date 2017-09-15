@@ -197,6 +197,9 @@
                   <li class="has_sub">
                       <a href="{{ url('/users/addstaff') }}" class="waves-effect"><i class="fa fa-plus"></i>Add staff</a>
                   </li>
+                  <li class="has_sub">
+                      <a href="{{ url('/users/viewstaff') }}" class="waves-effect"><i class="ti-pencil-alt"></i>View staff</a>
+                  </li>
                   @endif
               </ul>
               <div class="clearfix"></div>

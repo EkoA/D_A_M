@@ -1,4 +1,6 @@
+
 @extends('layouts.items')
+
 @section('title')
 	Add new Asset Classification
 @stop
@@ -92,5 +94,5 @@
 					</div>
 					</div>
 					</div>
-					</div>										
+					</div>
 @stop

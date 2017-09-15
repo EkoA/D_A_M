@@ -46,6 +46,19 @@
 					<input type="submit" value="DECLINE" name="DECLINE"></form></td>
         </tr>
 		@endforeach
+				<form class="form-horizontal" role="form" method="POST" action="{{ route('asset.massdecision') }}">
+				{{ csrf_field() }} {{ method_field('PUT') }}
+				<input type="hidden" name="assets" value="">
+				<input type="hidden" value="APPROVED" name="asset_approval">
+				<input type="submit" value="APPROVE" name="APPROVE">
+			  </form>
+				&nbsp; &nbsp;
+				<form class="form-horizontal" role="form" method="POST" action="{{ route('asset.massdecision') }}">
+				{{ csrf_field() }} {{ method_field('PUT') }}
+				<input type="hidden" name="assets" value="">
+				<input type="hidden" value="DECLINED" name="asset_approval">
+				<input type="submit" value="DECLINE" name="DECLINE">
+				</form>
 		@endif
 		</table>
 

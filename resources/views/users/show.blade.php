@@ -1,4 +1,13 @@
-@extends('layouts.staff')
+<?php $layout = 'layouts.staff'; ?>
+@if(Auth::check())
+		@if(Auth::user()->role_id == 'HOD')
+				<?php $layout = 'layouts.departments'; ?>
+		@else
+				<?php $layout = 'layouts.staff'; ?>
+		@endif
+@endif
+@extends($layout)
+
 @section('title')
 	User ID | {{$user->id}}
 @stop
@@ -45,7 +54,7 @@
 	</table>
 	<br>
 	<center>
-	<a href="{{route('users.edit', $user->id)}}">Edit</a>&nbsp; | &nbsp;{!!Form::submit('Delete')!!}
+	<a href="{{route('users.activatemail', $user->id)}}">Resend activation</a>&nbsp; | <a href="{{route('users.edit', $user->id)}}">Edit</a>&nbsp; | &nbsp;{!!Form::submit('Delete')!!} &nbsp; | &nbsp; <a href="{{route('users.resetpassword', $user->id)}}">Reset Password</a>
 	</center>
 	{!!Form::close()!!}
 

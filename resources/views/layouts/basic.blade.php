@@ -57,6 +57,12 @@
 ">&nbsp;&nbsp;&nbsp;View Requests</a></li>
                          <li><a href="{{ url('/orders/create') }}" style="font-family: inherit;
 ">&nbsp;&nbsp;&nbsp;Make Request</a></li>
+                    @if(Auth::user()->department == "FINANCE")
+                         <li><a href="{{ url('/items/') }}" style="font-family: inherit;
+">&nbsp;&nbsp;&nbsp;Manage Assets</a></li>
+                         <li><a href="{{ url('/vendors/') }}" style="font-family: inherit;
+">&nbsp;&nbsp;&nbsp;Manage Vendors</a></li>
+                    @endif
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right pull-right">

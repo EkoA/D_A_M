@@ -216,6 +216,31 @@ class FinanceController extends Controller
         return view('finances.order')->with('user', $user);
     }
 
+    public function generateReport(Request $request)
+    {
+      $dat = date("d-m-Y");
+
+      $orders = Order::select(['id', 'order_item', 'description', 'quantity', 'cost', 'admin_approval', 'finance_approval', 'hod_approval', 'department',
+                'made_by', 'created_at'])->where('admin_approval', 'APPROVED')->get();
+      //dd($orders);
+      $orders = json_decode($orders, true);
+      //$orders = collect($orders[0]);
+
+      //$reporttype = $request->report_type;
+
+          Excel::create("DAMsOrderReport_$dat", function($excel) use($orders)
+          {
+            $excel->sheet('Sheetname', function($sheet) use($orders)
+            {
+                $sheet->fromArray($orders, null, 'A1', false, false)->prependRow([
+                  'ID', 'Item', 'Item Description', 'Quantity', 'Amount', 'MD Approval', 'Finance Approval', 'H.O.D Approval', 'Department',
+                  'Inititator', 'Date'
+                ]);
+            });
+
+          })->export('xls');
+    }
+
     public function sendEmailReminder($email, $name)
     {
       Mail::send('emails.pending', ['name' => $name], function ($message) use ($email){

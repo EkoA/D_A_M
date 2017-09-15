@@ -32,7 +32,8 @@ class ItemController extends Controller
         }
 
         $user = Auth::user()->role_id;
-        if($user == "BASIC")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
             return view('errors.404');
         }
@@ -59,7 +60,8 @@ class ItemController extends Controller
         }
 
         $user = Auth::user()->role_id;
-        if($user == "BASIC")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
             return view('errors.404');
         }
@@ -106,7 +108,8 @@ class ItemController extends Controller
         }
 
         $user = Auth::user()->role_id;
-        if($user == "BASIC")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
             return view('errors.404');
         }
@@ -147,8 +150,8 @@ class ItemController extends Controller
         }
 
         $user = Auth::user()->role_id;
-
-        if($user == "BASIC")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
             return view('errors.404');
         }
@@ -196,7 +199,8 @@ class ItemController extends Controller
         }
 
         $user = Auth::user()->role_id;
-        if($user == "BASIC")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
             return view('errors.404');
         }
@@ -225,7 +229,8 @@ class ItemController extends Controller
         }
 
         $user = Auth::user()->role_id;
-        if($user == "BASIC")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
             return view('errors.404');
         }
@@ -285,7 +290,8 @@ class ItemController extends Controller
         }
 
         $user = Auth::user()->role_id;
-        if($user == "BASIC")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
             return view('errors.404');
         }
@@ -482,7 +488,8 @@ class ItemController extends Controller
         }
                 //checking user role
         $user = Auth::user()->role_id;
-        if($user!="HOF")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
             return view('errors.404');
         }
@@ -506,8 +513,8 @@ class ItemController extends Controller
       }
 
       $user = Auth::user()->role_id;
-
-      if($user == "BASIC")
+      $userd = Auth::user()->department;
+      if($user == "BASIC" && $userd != "FINANCE")
       {
           return view('errors.404');
       }
@@ -526,7 +533,8 @@ class ItemController extends Controller
       }
 
       $user = Auth::user()->role_id;
-      if($user != "HOF")
+      $userd = Auth::user()->department;
+      if($user == "BASIC" && $userd != "FINANCE")
       {
           return view('errors.404');
       }
@@ -862,6 +870,70 @@ class ItemController extends Controller
         return redirect()->route('asset.disposalpending');
     }
 
+    public function massdecision(Request $request)
+    {
+        if (Auth::guest())
+        {
+           return view('auth.login');
+        }
+
+        $user = Auth::user()->role_id;
+        if($user != "ADMIN")
+        {
+            return view('errors.404');
+        }
+
+        $items = DB::table('items')->where('asset_approval', 'PENDING')->get();
+        //dd($items);
+        if($request->asset_approval == "APPROVED")
+        {
+            foreach ($items as $key => $value)
+            {
+              foreach ($value as $k => $v)
+              {
+                if($k == "id")
+                {
+                  $id = $v;
+                }
+                $item = Item::find($id);
+                $item->asset_approval = $request->asset_approval;
+                $item->save();
+              }
+            }
+        }
+
+        if($request->asset_approval == "DECLINED")
+        {
+            foreach ($items as $key => $value)
+            {
+              foreach ($value as $k => $v)
+              {
+                if($k == "id")
+                {
+                  $id = $v;
+                }
+                $item = Item::find($id);
+                Item::destroy($id);
+              }
+            }
+        }
+
+        $item = Item::find($id);
+
+        if($request->asset_approval == "DECLINED")
+        {
+          Item::destroy($id);
+        }
+
+        if($request->asset_approval == "APPROVED")
+        {
+          $item->asset_approval = $request->asset_approval;
+          $item->save();
+        }
+
+        return redirect()->route('asset.index');
+    }
+
     public function disposalpending()
     {
       if (Auth::guest())
@@ -898,7 +970,8 @@ class ItemController extends Controller
         }
 
         $user = Auth::user()->role_id;
-        if($user == "BASIC")
+        $userd = Auth::user()->department;
+        if($user == "BASIC" && $userd != "FINANCE")
         {
             return view('errors.404');
         }
@@ -988,6 +1061,154 @@ class ItemController extends Controller
 
         //return view('items.create', ['classifications'=>$classifications, 'user' => $userr, 'departments'=>$departments]);
         return redirect()->route('items.create', ['classifications'=>$classifications, 'user' => $userr, 'departments'=>$departments, 'ret'=>'Successfully Registered Asset']);
+    }
+
+    public function reports()
+    {
+      if (Auth::guest())
+      {
+         return view('auth.login');
+      }
+
+      $user = Auth::user()->role_id;
+      $userd = Auth::user()->department;
+      if($user == "BASIC" && $userd != "FINANCE")
+      {
+          return view('errors.404');
+      }
+
+      $classifications = Classification::all();
+
+      $departments = Department::all();
+
+      return view('items.reports', ['classifications'=>$classifications, 'departments'=>$departments]);
+    }
+
+    public function reportgen(Request $request)
+    {
+      if (Auth::guest())
+      {
+         return view('auth.login');
+      }
+
+      $user = Auth::user()->role_id;
+      $userd = Auth::user()->department;
+      if($user == "BASIC" && $userd != "FINANCE")
+      {
+          return view('errors.404');
+      }
+
+      //dd($request->purchase_date);
+
+      if(!empty($request->economiclife)){
+      $economiclife = $request->economiclife;
+      }else { $economiclife = "";}
+
+      if(!empty($request->residual_value_from)){
+      $residualfrom = $request->residual_value_from;
+      }else { $residualfrom = "";}
+
+      if(!empty($request->residual_value_to)){
+      $residualto = $request->residual_value_to;
+      }else { $residualto = "";}
+
+      if(!empty($request->department)){
+      $department = $request->department;
+      }else { $department = "";}
+
+      if(!empty($request->amount_from)){
+      $amountfrom = $request->amount_from;
+      }else { $amountfrom = "";}
+
+      if(!empty($request->amount_to)){
+      $amountto = $request->amount_to;
+      }else { $amountto = "";}
+
+      if(!empty($request->depreciation_from)){
+      $deprefrom = $request->depreciation_from;
+      }else { $deprefrom = "";}
+
+      if(!empty($request->depreciation_to)){
+      $depreto = $request->depreciation_to;
+      }else { $depreto = "";}
+
+      if(!empty($request->classification) && $request->classification != "None"){
+      $classification = $request->classification;
+      }else{ $classification = "";}
+
+      if(!empty($request->purchase_date_from)){
+      $datefrom = $request->purchase_date_from;
+      }else{ $datefrom = "";}
+
+      if(!empty($request->purchase_date_to)){
+      $dateto = $request->purchase_date_to;
+      }else{ $dateto = "";}
+
+      /*$items = Item::select([]);
+      if ($economiclife !== null) {
+        $items = $items->where();
+      }
+      $items->get()*/
+
+      $items = Item::select([
+        'id', 'asset_number', 'serialno', 'invoice_number', 'item', 'department', 'location', 'classification', 'supplier_details',
+        'description', 'amount', 'economiclife', 'current_value', 'purchase_date', 'asset_approval',
+        'created_by', 'created_at'
+      ])->where('asset_approval', 'APPROVED')
+                    ->where('disposal_status', 'AVAILABLE');
+                    if(!empty($request->economiclife)){
+                    $items = $items->where('economiclife', "$economiclife");
+                    }
+                    if(!empty($request->residual_value_from) && !empty($request->residual_value_to)){
+                    $items = $items->whereBetween('residual_value', [$residualfrom, $residualto]);
+                    }
+                    if(!empty($request->amount_from) && !empty($request->amount_to)){
+                    $items = $items->whereBetween('amount', [$amountfrom, $amountto]);
+                    }
+                    if(!empty($request->purchase_date_from) && !empty($request->purchase_date_to)){
+                    $items = $items->whereBetween('purchase_date', [$datefrom, $dateto]);
+                    }
+                    if(!empty($request->depreciation_from) && !empty($request->depreciation_to)){
+                    $items = $items->whereBetween('depreciation', [$deprefrom, $depreto]);
+                    }
+                    if(!empty($request->classification) && $request->classification != "None"){
+                    $items = $items->where('economiclife', "$classification");
+                    }
+                    if(!empty($request->economiclife)){
+                    $items = $items->where('department', "$department");
+                    }
+                    /*->whereBetween('amount', [$amountfrom, $amountto])
+                    ->whereBetween('depreciation', [$deprefrom, $depreto])
+                    ->get();*/
+      $items = $items->get();
+
+      if(empty($items[0]))
+      {
+        $msg = "No result for parameters set";
+        return view('items.reports', ['msg' => $msg]);
+      }
+
+      $dat = date("d-m-Y");
+
+      //$items = $request->report_details;
+      //dd($items);
+      $items = json_decode($items, true);
+      //$items = collect($items[0]);
+      //$reporttype = $request->report_type;
+
+          Excel::create("DAMsReport_$dat", function($excel) use($items)
+          {
+            $excel->sheet('Sheetname', function($sheet) use($items)
+            {
+                $sheet->fromArray($items, null, 'A1', false, false)->prependRow([
+                  'ID', 'Asset Number', 'Serial Number', 'Invoice Number', 'Item', 'Department', 'Location', 'Classification', 'Supplier Details',
+                  'Description', 'Amount', 'Economic Life', 'NBV', 'Purchase Date', 'Asset Approval',
+                  'Registered by', 'Registered on'
+                ]);
+            });
+
+          })->export('xls');
+
     }
 
     //mail function

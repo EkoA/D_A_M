@@ -158,6 +158,54 @@ class UserController extends Controller
         }
     }
 
+    public function activatemail($id)
+    {
+      $user = User::find($id);
+      $email = $user->email;
+      $genpa = $this->generatePassword($email);
+      $this->sendEmailReminder($user->email, $user->name, $genpa);
+      $msg = "Successfully Resent activation mail";
+      return view("users.show", ['msg'=>$msg, 'user'=>$user]);
+    }
+
+    public function resetpassword($id)
+    {
+      //
+      $user = User::find($id);
+      $user->account_activated = "NO";
+      $user->password = bcrypt("password");
+      $user->save();
+
+      $name = $user->name;
+      $email = $user->email;
+
+      //return "Hello";
+      Mail::queue('emails.resetpassword', ['name' => $name], function ($m) use($email, $name){
+          $m->to($email, $name)->subject('DAMS Account (DO-NOT-REPLY-THIS-EMAIL)');
+      });
+
+      /*if(Mail::failures())
+      {
+        $msg = 'Failed to send password reset email, please try again.';
+      }*/
+
+      /*if(count(Mail::failures()) > 0)
+      {
+         foreach(Mail::failures as $email_address) {
+             echo "$email_address <br />";
+          }
+      } else {
+          echo "Mail sent successfully!";
+      }*/
+
+      /* if(count(Mail::failures()) > 0){
+          $msg = 'Failed to send password reset email, please try again.';
+      }*/
+
+      $msg = "Successfully Reset password";
+      return view("users.show", ['msg'=>$msg, 'user'=>$user]);
+    }
+
     /**
      * Display the specified resource      *
      * @param  int  $id
@@ -171,7 +219,7 @@ class UserController extends Controller
         }
                        //checking user role
         $check = Auth::user()->role_id;
-        if($check!="ADMIN")
+        if($check=="BASIC" || $check=="HOF")
         {
             return view('errors.404');
         }
@@ -196,7 +244,12 @@ class UserController extends Controller
         $check = Auth::user()->role_id;
         if($check!="ADMIN")
         {
+          $dept =  Auth::user()->department;
+
+          if($check!="HOD" && $dept!="HUMAN CAPITAL")
+          {
             return view('errors.404');
+          }
         }
 
         $user = User::find($id);
@@ -261,7 +314,17 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->route('users.index');
+        $check = Auth::user()->role_id;
+        $dept =  Auth::user()->department;
+
+          if($check!="HOD" && $dept!="HUMAN CAPITAL")
+          {
+            return view('users.show')->with('user', $user);
+          }
+          else
+          {
+            return view('users.show')->with('user', $user);
+          }
     }
 
     /**
@@ -329,6 +392,28 @@ class UserController extends Controller
       return view('users.addstaff', ['departments'=>$departments, 'user' => $user]);
     }
 
+    public function viewstaff()
+    {
+        if (Auth::guest())
+        {
+           return view('auth.login');
+        }
+
+        //checking user role
+        $check = Auth::user()->role_id;
+        if($check!="ADMIN")
+        {
+          $dept =  Auth::user()->department;
+          if($check!="HOD" && $dept!="HUMAN CAPITAL")
+          {
+            return view('errors.404');
+          }
+        }
+
+        $users = User::all();
+        return view('users.viewstaff', ['users' => $users]);
+    }
+
         /**
      * Store a newly created resource in storage.
      *
@@ -360,7 +445,6 @@ class UserController extends Controller
             //'password' => 'required|min:6|confirmed',
         ]);
 
-
         $user = new user;
 
         //generating a password
@@ -374,12 +458,11 @@ class UserController extends Controller
         $user->department=$request->department;
         $user->account_activated=$request->account_activated;
         $user->password = bcrypt($genpa);
-
         //return $genpa;
-        $user->save();
         //return "Hello";
         //this is  to send the mail
         $this->sendEmailReminder($user->email, $user->name, $genpa);
+        $user->save();
         //$ret_val = ['email'=>$request->email, 'password'=>$genpa];
 
         if($check == "HOD")
@@ -428,7 +511,6 @@ class UserController extends Controller
     }
 
     //function to change password
-
     protected function add(array $data)
     {
         if (Auth::guest())
@@ -507,10 +589,15 @@ class UserController extends Controller
     {
         //$user = User::findOrFail($id);
         //$msg = $name;
-
-        Mail::send('emails.creation', ['name' => $name, 'password' => $password ], function ($m) use($email, $name){
+        Mail::queue('emails.creation', ['name' => $name, 'password' => $password ], function ($m) use($email, $name){
             $m->to($email, $name)->subject('DAMS Account (DO-NOT-REPLY-THIS-EMAIL)');
         });
+
+        if(Mail::failures())
+        {
+          $msg = 'Failed to send password reset email, please try again.';
+        }
+
     }
 
 }

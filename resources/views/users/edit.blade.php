@@ -1,4 +1,12 @@
-@extends('layouts.staff')
+<?php $layout = 'layouts.staff'; ?>
+@if(Auth::check())
+		@if(Auth::user()->role_id == 'HOD')
+				<?php $layout = 'layouts.departments'; ?>
+		@else
+				<?php $layout = 'layouts.staff'; ?>
+		@endif
+@endif
+@extends($layout)
 @section('title')
     Change Password - {{$user->id}}
 @stop
@@ -81,9 +89,9 @@
 
 						<?php
 
-						$role = $user->role_id;
+						/*$role = $user->role_id;
 
-						echo "<center><p>Current Role: <span>" . $role."</span></p></center>";
+						echo "<center><p>Current Role: <span>" . $role."</span></p></center>";*/
 						?>
 
                         <div class="form-group{{ $errors->has('role_id') ? ' has-error' : '' }}">
@@ -91,6 +99,7 @@
                             <div class="col-md-10">
                             <span>
                                  <select name ="role_id" id="role_id" class="form-control">
+                                  <option value="{{$user->role_id}}" selected="selected">{{$user->role_id}}</option>
                                   <option value="ADMIN">ADMIN</option>
                                   <option value="HOF">HEAD OF FINANCE</option>
                                   <option value="HOD">H.O.D</option>
@@ -99,12 +108,11 @@
                             </span>
                             </div>
                         </div>
-
 						<?php
 
-						$dept = $user->department;
+						/*$dept = $user->department;
 
-						echo "<center><p>Current Department: <span>" . $dept."</span></p></center>";
+						echo "<center><p>Current Department: <span>" . $dept."</span></p></center>";*/
 						?>
 
                         <div class="form-group{{ $errors->has('department') ? ' has-error' : '' }}">
@@ -115,6 +123,7 @@
                                      @if (empty($departments))
                                      <option value="None">There are no departments yet</option>
                                      @else
+                                     <option value="{{$user->department}}" selected="selected">{{$user->department}}</option>
                                      @foreach($departments as $department)
                                      <option value="{{$department->dept_name}}">{{$department->dept_name}}</option>
                                      @endforeach
