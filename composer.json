@@ -13,7 +13,8 @@
         "dompdf/dompdf": "^0.8.0",
         "barryvdh/laravel-dompdf": "^0.8.0",
         "maatwebsite/excel": "~2.1.0",
-        "bogardo/mailgun": "^5.0"
+        "bogardo/mailgun": "^5.0",
+        "genealabs/laravel-caffeine": "~0.3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

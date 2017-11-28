@@ -10,7 +10,10 @@ use DB;
 use Auth;
 use App\User;
 use App\Item;
+use App\Classification;
+use App\Department;
 use Mail;
+use Excel;
 
 
 class OrderController extends Controller
@@ -117,7 +120,7 @@ class OrderController extends Controller
     			        $order->hod_approval = "APPROVED";
                   $order->save();
                   $hof = DB::table('users')->where('role_id', 'HOF')->first();
-                  $this->sendEmailReminder($hof->email, $hof->name);
+                  //$this->sendEmailReminder($hof->email, $hof->name);
                   return redirect()->route('orders.create', ['res' => $response]);
     		  }
     		  else
@@ -125,7 +128,7 @@ class OrderController extends Controller
     			  if(!empty($hod))
     			  {
     				  $order->save();
-    				  $this->sendEmailReminder($hod->email, $hod->name);
+    				  ////$this->sendEmailReminder($hod->email, $hod->name);
     				  return redirect()->route('orders.create', ['res' => $response]);
     			  }
     			  else
@@ -133,7 +136,7 @@ class OrderController extends Controller
     				  $order->hod_approval = "APPROVED";
     				  $order->save();
     				  $hof = DB::table('users')->where('role_id', 'HOF')->first();
-    				  $this->sendEmailReminder($hof->email, $hof->name);
+    				  //$this->sendEmailReminder($hof->email, $hof->name);
     				  return redirect()->route('orders.create', ['res' => $response]);
     			  }
     		  }
@@ -142,7 +145,7 @@ class OrderController extends Controller
         if($user == "HOD")
         {
             $hof = DB::table('users')->where('role_id', 'HOF')->first();
-            $this->sendEmailReminder($hof->email, $hof->name);
+            //$this->sendEmailReminder($hof->email, $hof->name);
             $order->save();
             return redirect()->route('departments.create', ['res' => $response]);
         }
@@ -150,7 +153,7 @@ class OrderController extends Controller
         if($user == "HOF")
         {
             $admin = DB::table('users')->where('role_id', 'ADMIN')->first();
-            $this->sendEmailReminder($admin->email, $admin->name);
+            //$this->sendEmailReminder($admin->email, $admin->name);
             $order->save();
             return redirect()->route('finances.order', ['res' => $response]);
         }
@@ -182,7 +185,14 @@ class OrderController extends Controller
         }
 
         $order = Order::find($id);
-        return view('orders.show')->with('order', $order);
+            
+        $dept = Auth::user()->department;
+        
+        $hod = DB::table('users')->where('role_id', 'HOD')->where('department', $dept)->first();
+        
+        dd("$hod");
+        
+        return view('orders.show', ['order'=>$order, '']);
     }
 
     public function orderdecision(Request $request, $id)
@@ -230,18 +240,18 @@ class OrderController extends Controller
               }
 
               $pers = DB::table('users')->where('name', $order->made_by)->first();
-              $this->sendEmailAttend($pers->email, $pers->name, $id);
+              //$this->sendEmailAttend($pers->email, $pers->name, $id);
 
               $hof = DB::table('users')->where('role_id', 'HOF')->first();
 
-              $this->sendEmailApproved($hof->email, $hof->name, $id);
+              //$this->sendEmailApproved($hof->email, $hof->name, $id);
             }
             else
             {
               $order->comment = $request->comment;
               $order->save();
               $pers = DB::table('users')->where('name', $order->made_by)->first();
-              $this->sendEmailAttend($pers->email, $pers->name, $id);
+              //$this->sendEmailAttend($pers->email, $pers->name, $id);
             }
             return redirect()->route('orders.pending');
           }
@@ -253,12 +263,12 @@ class OrderController extends Controller
             if($response == "APPROVED")
             {
               $pers = DB::table('users')->where('role_id', 'ADMIN')->first();
-              $this->sendEmailReminder($pers->email, $pers->name);
+              //$this->sendEmailReminder($pers->email, $pers->name);
             }
             else
             {
               $pers = DB::table('users')->where('name', $order->made_by)->first();
-              $this->sendEmailAttend($pers->email, $pers->name);
+              //$this->sendEmailAttend($pers->email, $pers->name);
             }
             return redirect()->route('finances.pending');
           }
@@ -270,12 +280,12 @@ class OrderController extends Controller
             if($response == "APPROVED")
             {
               $pers = DB::table('users')->where('role_id', 'HOF')->first();
-              $this->sendEmailReminder($pers->email, $pers->name);
+              //$this->sendEmailReminder($pers->email, $pers->name);
             }
             else
             {
               $pers = DB::table('users')->where('name', $order->made_by)->first();
-              $this->sendEmailAttend($pers->email, $pers->name);
+              //$this->sendEmailAttend($pers->email, $pers->name);
             }
             return redirect()->route('departments.pending');
           }
@@ -330,12 +340,13 @@ class OrderController extends Controller
         $pers = DB::table('users')->where('name', $order->made_by)->first();
                 //DB::table('table_name')->distinct()->get(['column_name']);
 
-        $this->sendEmailAttend($pers->email, $pers->name, $id);
+        //$this->sendEmailAttend($pers->email, $pers->name, $id);
 
         $order->save();
 
         return redirect()->route('orders.create');
     }
+    
         /**
      * Remove the specified resource from storage.
      *
@@ -381,7 +392,117 @@ class OrderController extends Controller
 
         return view('orders.pending', ['orders' => $orders]);
     }
+    
+    
+    public function reports()
+    {
+      if (Auth::guest())
+      {
+         return view('auth.login');
+      }
 
+      $user = Auth::user()->role_id;
+      $userd = Auth::user()->department;
+      if($user == "BASIC" && $userd != "FINANCE")
+      {
+          return view('errors.404');
+      }
+
+      $classifications = Classification::all();
+
+      $departments = Department::all();
+
+      return view('orders.reports', ['classifications'=>$classifications, 'departments'=>$departments]);
+    }
+    
+    
+    public function reportgen(Request $request)
+    {
+      if (Auth::guest())
+      {
+         return view('auth.login');
+      }
+
+      $user = Auth::user()->role_id;
+      $userd = Auth::user()->department;
+      if($user == "BASIC" && $userd != "FINANCE")
+      {
+          return view('errors.404');
+      }
+
+      //dd($request->purchase_date);
+        //dd($request->department);
+      if(!empty($request->department)){
+      $department = $request->department;
+      }else { $department = "";}
+        
+      //dd($department);
+
+      if(!empty($request->amount_from)){
+      $amountfrom = $request->amount_from;
+      }else { $amountfrom = "";}
+
+      if(!empty($request->amount_to)){
+      $amountto = $request->amount_to;
+      }else { $amountto = "";}
+
+      if(!empty($request->purchase_date_from)){
+      $datefrom = $request->purchase_date_from;
+      }else{ $datefrom = "";}
+
+      if(!empty($request->purchase_date_to)){
+      $dateto = $request->purchase_date_to;
+      }else{ $dateto = "";}
+
+      $orders = Order::select([
+        'order_item', 'quantity', 'department', 'made_by', 'hod_approval', 'finance_approval', 'admin_approval', 'cost'   
+      ]);
+                    if(!empty($department) && $department != "None"){
+                    $orders = $orders->where('department', "$department");
+                    }
+                    if(!empty($amountfrom) && !empty($amountto)){
+                    $orders = $orders->whereBetween('cost', ["$amountfrom", "$amountto"]);
+                    }
+                    if(!empty($datefrom) && !empty($dateto)){
+                    $orders = $orders->whereBetween('created_at', ["$datefrom", "$dateto"]);
+                    //dd($dateto);
+                    }
+                    /*->whereBetween('amount', [$amountfrom, $amountto])
+                    ->whereBetween('depreciation', [$deprefrom, $depreto])
+                    ->get();*/
+      $orders = $orders->get();
+      
+
+      if(empty($orders[0]))
+      {
+        $msg = "No result for parameters set";
+        $classifications = Classification::all();
+        $departments = Department::all();
+        return view('orders.reports', ['msg' => $msg, 'classifications'=>$classifications, 'departments'=>$departments]);
+      }
+
+      $dat = date("d-m-Y");
+
+      //$items = $request->report_details;
+      //dd($items);
+      $orders = json_decode($orders, true);
+      //$items = collect($items[0]);
+      //$reporttype = $request->report_type;
+
+          Excel::create("DAMsRequestReport_$dat", function($excel) use($orders)
+          {
+            $excel->sheet('Sheetname', function($sheet) use($orders)
+            {
+                $sheet->fromArray($orders, null, 'A1', false, false)->prependRow([
+                  'Item', 'Quantity', 'Department', 'Initiator', 'H.O.D Approval', 'Finance Approval', 'MD Approval', 'Amount(Per item)', 'Total'
+                ]);
+                /*foreach($sheet->rows as $row){
+                $row->appendCell('Some custom data');
+                }*/
+            });
+          })->export('xls');
+    }
+        
     public function sent()
     {
         if (Auth::guest())

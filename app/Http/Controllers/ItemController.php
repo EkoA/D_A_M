@@ -505,7 +505,7 @@ class ItemController extends Controller
         //return view('items.classification', ['office' => $office, 'plant' => $plant, 'furni' => $furni]);
     }
 
-	  public function dispose($id)
+    public function dispose($id)
     {
       if (Auth::guest())
       {
@@ -655,7 +655,7 @@ class ItemController extends Controller
                     $pers = DB::table('users')->where('role_id', 'ADMIN')->first();
 
                     //mail function
-                    $this->sendEmailAdd($item->item, $pers->email, $item->location, $item->classification, $item->amount);
+                    //$this->sendEmailAdd($item->item, $pers->email, $item->location, $item->classification, $item->amount);
 
                     $item->save();
 
@@ -1025,7 +1025,7 @@ class ItemController extends Controller
         $pers = DB::table('users')->where('role_id', 'ADMIN')->first();
 
         //mail function
-        $this->sendEmailAdd($item->item, $pers->email, $item->location, $item->classification, $item->amount);
+        //$this->sendEmailAdd($item->item, $pers->email, $item->location, $item->classification, $item->amount);
 
         $item->save();
 

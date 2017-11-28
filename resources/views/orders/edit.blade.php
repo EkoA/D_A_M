@@ -9,7 +9,7 @@ Request Item
 <center>
     <table class="table table-hover">
     @if (empty($orders))
-        <p>There are no registered assets yet</p>
+        <p>There are no requests yet</p>
     @else
             <caption>Suggestions</caption>
     @foreach($orders as $orders)
@@ -22,7 +22,6 @@ Request Item
 </center>
 
 <hr>
-
                 	<center>
                     <?php
                         //$ret = $_GET["ret"];

@@ -44,6 +44,11 @@
 	<tr><td>H.O.D Approval </td><td class="whitebox" ><span>{{ $order->hod_approval }}</span></td></tr>
 	<tr><td>Date Requested </td><td class="whitebox" ><span>{{ $order->created_at }}</span></td></tr>
 	</table>
+    @if($order->hod_approval == "PENDING" || ($order->hod_approval == "APPROVED" && $hd == "FALSE" && $order->finance_approval == "PENDING"))
+    <center><a href="{{route('basic.edit', $order->id)}}"> Edit</a></center>
+    @else                
+                    
+    @endif
 </div>
 	<button onclick="window.print()">Print this page</button>
 </div>

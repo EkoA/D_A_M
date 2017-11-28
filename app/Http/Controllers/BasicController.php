@@ -68,9 +68,82 @@ class BasicController extends Controller
         $user = Auth::user()->name;
 
         $order = Order::find($id);
-
-        return view('basic.show')->with('order', $order);
+        
+        $dept = Auth::user()->department;
+        
+        $hod = DB::table('users')->where('role_id', 'HOD')->where('department', $dept)->first();
+        
+        if(empty($hod))
+        {
+            $hd = "FALSE";
+        }
+        else
+        {
+            $hd = "TRUE";
+        }
+        
+        return view('basic.show', ['order'=>$order, 'hd'=>$hd]);
+    }
+    
+    public function edit($id)
+    {
+        if (Auth::guest())
+        {
+           return view('auth.login'); 
+        }
+        
+        $order = Order::find($id);
+        
+        $dept = Auth::user()->department;
+        
+        $hod = DB::table('users')->where('role_id', 'HOD')->where('department', $dept)->first();
+        
+        if(empty($hod))
+        {
+            $hd = "FALSE";
+        }
+        else
+        {
+            $hd = "TRUE";
+        }
+        
+        return view('basic.edit', ['order'=>$order, 'hd'=>$hd]);
     }
 
+    public function update(Request $request, $id)
+    {
+        if (Auth::guest())
+        {
+           return view('auth.login');
+        }
+
+        $order = Order::find($id);
+
+        $order->order_item=$request->order_item;
+        $order->description=$request->description;
+        $order->cost=$request->cost;
+        $order->quantity=$request->quantity;
+
+        $order->save();
+        
+        $user = Auth::user()->name;
+        
+        $dept = Auth::user()->department;
+
+        $order = Order::find($id);
+        
+        $hod = DB::table('users')->where('role_id', 'HOD')->where('department', $dept)->first();
+        
+        if(empty($hod))
+        {
+            $hd = "FALSE";
+        }
+        else
+        {
+            $hd = "TRUE";
+        }
+
+        return view('basic.show', ['order' => $order, 'hd'=>$hd]);
+    }
 
 }

@@ -202,6 +202,9 @@
                     <li class="has_sub">
                         <a href="{{ url('/orders/pending') }}" class="waves-effect"><i class="ti-pencil-alt"></i>Pending Requests</a>
                     </li>
+                    <li class="has_sub">
+                      <a href="{{ url('/orders/reports') }}" class="waves-effect"><i class="fa fa-plus"></i>Request Report</a>
+                  </li>
                 </ul>
                 <div class="clearfix"></div>
             </div>

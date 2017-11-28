@@ -184,7 +184,7 @@ class FinanceController extends Controller
 
         $pers = DB::table('users')->where('role_id', 'ADMIN')->first();
 
-        $this->sendEmailReminder($pers->email, $pers->name);
+        //$this->sendEmailReminder($pers->email, $pers->name);
 
         $order->save();
 

@@ -32,7 +32,7 @@
 				<div class="card-box table-responsive">
 					<table id="datatable" class="table table-striped table-bordered">
 		@if (empty($items))
-			<p>There are no pending assets</p>
+			<p style="text-align:center">There are no pending assets</p>
 		@else
 		<thead>
 				<tr><th>&nbsp;Item Type&nbsp;</th><th>&nbsp;Cost</th><th>&nbsp;Purchase Date</th></tr>
@@ -46,21 +46,27 @@
 					<input type="submit" value="DECLINE" name="DECLINE"></form></td>
         </tr>
 		@endforeach
-				<form class="form-horizontal" role="form" method="POST" action="{{ route('asset.massdecision') }}">
-				{{ csrf_field() }} {{ method_field('PUT') }}
-				<input type="hidden" name="assets" value="">
-				<input type="hidden" value="APPROVED" name="asset_approval">
-				<input type="submit" value="APPROVE" name="APPROVE">
-			  </form>
-				&nbsp; &nbsp;
-				<form class="form-horizontal" role="form" method="POST" action="{{ route('asset.massdecision') }}">
-				{{ csrf_field() }} {{ method_field('PUT') }}
-				<input type="hidden" name="assets" value="">
-				<input type="hidden" value="DECLINED" name="asset_approval">
-				<input type="submit" value="DECLINE" name="DECLINE">
-				</form>
 		@endif
-		</table>
+
+		@if(empty($items))
+
+		@else
+		<form class="form-horizontal" role="form" method="POST" action="{{ route('asset.massdecision') }}">
+		{{ csrf_field() }} {{ method_field('PUT') }}
+		<input type="hidden" name="assets" value="">
+		<input type="hidden" value="APPROVED" name="asset_approval">
+		<input type="submit" value="APPROVE ALL" name="APPROVE">
+		</form>
+		&nbsp; &nbsp;
+		<form class="form-horizontal" role="form" method="POST" action="{{ route('asset.massdecision') }}">
+		{{ csrf_field() }} {{ method_field('PUT') }}
+		<input type="hidden" name="assets" value="">
+		<input type="hidden" value="DECLINED" name="asset_approval">
+		<input type="submit" value="DECLINE ALL" name="DECLINE">
+		</form>
+		@endif
+</table>
+
 
 	</div>
 </div>

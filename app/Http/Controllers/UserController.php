@@ -180,9 +180,9 @@ class UserController extends Controller
       $email = $user->email;
 
       //return "Hello";
-      Mail::queue('emails.resetpassword', ['name' => $name], function ($m) use($email, $name){
+      /*Mail::queue('emails.resetpassword', ['name' => $name], function ($m) use($email, $name){
           $m->to($email, $name)->subject('DAMS Account (DO-NOT-REPLY-THIS-EMAIL)');
-      });
+      });*/
 
       /*if(Mail::failures())
       {
@@ -461,7 +461,7 @@ class UserController extends Controller
         //return $genpa;
         //return "Hello";
         //this is  to send the mail
-        $this->sendEmailReminder($user->email, $user->name, $genpa);
+        //$this->sendEmailReminder($user->email, $user->name, $genpa);
         $user->save();
         //$ret_val = ['email'=>$request->email, 'password'=>$genpa];
 

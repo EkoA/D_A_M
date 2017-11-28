@@ -51,6 +51,16 @@ Route::put('/orders/orderdecision/{id}', [
 	'as' => 'orders.orderdecision'
 ]);
 
+Route::get('/orders/reports/', [
+	'uses' => 'OrderController@reports',
+	'as' => 'orders.reports'
+]);
+
+Route::post('/orders/reportgen/', [
+	'uses' => 'OrderController@reportgen',
+	'as' => 'orders.reportgen'
+]);
+
 //Routes for Departments
 Route::get('/departments/pending/', [
 	'uses' => 'DepartmentController@pending',
@@ -155,6 +165,16 @@ Route::get('/basic/sent/', [
 Route::get('/basic/show/{id}', [
 	'uses' => 'BasicController@show',
 	'as' => 'basic.show'
+]);
+
+Route::get('/basic/{id}/edit', [
+	'uses' => 'BasicController@edit',
+	'as' => 'basic.edit'
+]);
+
+Route::put('/basic/update/{id}', [
+	'uses' => 'BasicController@update',
+	'as' => 'basic.update'
 ]);
 
 

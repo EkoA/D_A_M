@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    'host' => env('MAIL_HOST', 'mail.begindreams.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'dams@dreammesh.ng', 'name' => 'DAMS'],
+    'from' => ['address' => 'no-reply@begindreams.com', 'name' => 'DAMS'],
 
     /*
     |--------------------------------------------------------------------------

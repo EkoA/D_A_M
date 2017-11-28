@@ -100,6 +100,9 @@
                   <li class="has_sub">
                       <a href="{{ url('/finances/order') }}" class="waves-effect"><i class="fa fa-plus"></i>Request Item</a>
                   </li>
+                  <li class="has_sub">
+                      <a href="{{ url('/orders/reports') }}" class="waves-effect"><i class="fa fa-plus"></i>Request Report</a>
+                  </li>
               </ul>
               <div class="clearfix"></div>
           </div>

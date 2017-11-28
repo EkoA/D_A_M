@@ -191,7 +191,7 @@ class DepartmentController extends Controller
         $pers = DB::table('users')->where('role_id', 'HOF')->first();
 
 
-        $this->sendEmailReminder($pers->email, $pers->name);
+        //$this->sendEmailReminder($pers->email, $pers->name);
 
         $order->save();
 

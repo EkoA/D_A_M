@@ -254,7 +254,7 @@
                             <label for="amount" class="col-md-2 control-label">Amount</label>
 
                             <div class="col-md-10">
-                                <input id="amount" type="number" class="form-control" name="amount" step="any" placeholder="Amount or Cost" value="1" min="1" required>
+                                <input id="amount" type="number" class="form-control" name="amount" step="any" placeholder="Amount or Cost"  min="1" required>
 
                                 @if ($errors->has('amount'))
                                     <span class="help-block">
