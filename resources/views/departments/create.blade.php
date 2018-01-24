@@ -79,23 +79,26 @@
                             </div>
                         </div>
 
-                        <div class="form-group{{ $errors->has('role_id') ? ' has-error' : '' }}">
+												<div class="form-group{{ $errors->has('role_id') ? ' has-error' : '' }}">
                             <label for="password-confirm" class="col-md-2 control-label">Quantity</label>
+
                           <div class="col-md-10">
-                                <input id="quantity" type="number" class="form-control" name="quantity" min="1" required>
-                                @if ($errors->has('order_item'))
+                                <input id="quantity" type="number" class="form-control" name="quantity"  value="1" min="1" onkeyup="totalcost()" required>
+
+                                @if ($errors->has('quantity'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('quantity') }}</strong>
                                     </span>
                                 @endif
                             </div>
+
                         </div>
 
 												<div class="form-group{{ $errors->has('cost') ? ' has-error' : '' }}">
 														<label for="cost" class="col-md-2 control-label">Cost (per Item)</label>
 
 													<div class="col-md-10">
-																<input id="cost" type="number" class="form-control" name="cost"  min="1" required>
+																<input id="cost" type="number" class="form-control" name="cost"  value="1" min="1" onkeyup="totalcost()" required>
 
 																@if ($errors->has('cost'))
 																		<span class="help-block">
@@ -103,7 +106,37 @@
 																		</span>
 																@endif
 														</div>
+
 												</div>
+
+												<div class="form-group{{ $errors->has('total_cost') ? ' has-error' : '' }}">
+														<label for="cost" class="col-md-2 control-label">Total Cost</label>
+
+													<div class="col-md-10">
+																<input id="total_cost" type="number" class="form-control" name="total_cost" min="1" readonly="readonly" required>
+
+																@if ($errors->has('total_cost'))
+																		<span class="help-block">
+																				<strong>{{ $errors->first('total_cost') }}</strong>
+																		</span>
+																@endif
+														</div>
+
+												</div>
+
+												<script type="text/javascript">
+													function totalcost()
+													{
+														var quantity = document.getElementById("quantity").value;
+
+														var cost = document.getElementById("cost").value;
+
+														var total_cost = quantity * cost;
+
+														document.getElementById("total_cost").value = total_cost;
+														//alert(total_cost);
+													}
+												</script>
 
                             <input id="admin_approval" type="hidden" class="form-control" name="admin_approval" value="PENDING" required>
                             <input id="finance_approval" type="hidden" class="form-control" name="finance_approval" value="PENDING" required>

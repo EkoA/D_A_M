@@ -28,7 +28,7 @@
 												<li><a href="#">View Staff</a></li>>
 						</ul>
 				</div>-->
-				<h4 class="page-title">All Requests</h4>
+				<h4 class="page-title">User | <span>{{ $user->name}}</span></h4>
 				<ol class="breadcrumb">
 
 				</ol>
@@ -38,6 +38,12 @@
 <div class="row">
  <div class="col-sm-2"></div>
 		<div class="col-sm-8">
+			<?php if(isset($msg))
+						{
+							echo "<center><span>".$msg. "</span></center>";
+							echo "<br>";
+						}
+			?>
 				<div class="card-box table-responsive">
 					<table id="datatable" class="table table-hover">
 	{!!Form::open([
@@ -49,12 +55,15 @@
 	<tr><td>Email </td><td class="whitebox" ><span>{{ $user->email }}</span></td></tr>
 	<tr><td>Role </td><td class="whitebox" ><span>{{ $user->role_id }}</span></td></tr>
 	<tr><td>Department</td><td class="whitebox" ><span>{{ $user->department }}</span></td></tr>
+	@if($user->account_activated == "BLOCK")
+		<tr><td>Status</td><td class="whitebox" ><span>BLOCKED</span></td></tr>
+	@endif
 	<tr><td>Date Added</td><td class="whitebox" ><span>{{ $user->created_at }}</span></td></tr>
 	<tr><td>Last Modified</td><td class="whitebox" ><span>{{ $user->updated_at }}</span></td></tr>
 	</table>
 	<br>
 	<center>
-	<a href="{{route('users.activatemail', $user->id)}}">Resend activation</a>&nbsp; | <a href="{{route('users.edit', $user->id)}}">Edit</a>&nbsp; | &nbsp;{!!Form::submit('Delete')!!} &nbsp; | &nbsp; <a href="{{route('users.resetpassword', $user->id)}}">Reset Password</a>
+	<a href="{{route('users.activatemail', $user->id)}}">Resend activation</a>&nbsp; | <a href="{{route('users.edit', $user->id)}}">Edit</a>&nbsp; | &nbsp;{!!Form::submit('Delete')!!} &nbsp; | &nbsp; <a href="{{route('users.resetpassword', $user->id)}}">Reset Password</a> @if($user->account_activated == "BLOCK")| &nbsp; <a href="{{route('users.blockuser', $user->id)}}"> Unblock User </a> @else | &nbsp; <a href="{{route('users.blockuser', $user->id)}}"> Block User </a> @endif
 	</center>
 	{!!Form::close()!!}
 

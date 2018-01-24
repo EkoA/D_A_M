@@ -42,7 +42,7 @@ class ItemController extends Controller
           'id', 'asset_number', 'serialno', 'invoice_number', 'item', 'department', 'location', 'classification', 'supplier_details',
           'description', 'amount', 'economiclife', 'current_value', 'purchase_date', 'asset_approval',
           'created_by', 'created_at'
-        ])->where('asset_approval', 'APPROVED')->where('disposal_status', 'AVAILABLE')->get();
+        ])->where('asset_approval', 'APPROVED')->where('disposal_status', 'AVAILABLE')->orderBy('id', 'desc')->paginate(10);
 
         return view('items.index', ['items'=> $items]);
     }
@@ -480,6 +480,22 @@ class ItemController extends Controller
           }
     }
 
+    public function department($id)
+    {
+       if (Auth::guest())
+       {
+          return view('auth.login');
+       }
+
+       $dept = Department::find($id);
+
+       //dd($dept->dept_name);
+
+       $items = Item::Where('department', $dept->dept_name)->Where('asset_approval', 'APPROVED')->where('disposal_status', 'AVAILABLE')->get();
+
+       return view('items.department', ['items'=>$items, 'dept'=>$dept]);
+    }
+
     public function classification(Request $req)
     {
        if (Auth::guest())
@@ -715,7 +731,7 @@ class ItemController extends Controller
 
         return view('finances.pending', ['orders' => $orders]);*/
         //$items = Item::all();
-        $items = DB::table('items')->where('asset_approval', 'APPROVED')->where('disposal_status', 'AVAILABLE')->get();
+        $items = DB::table('items')->where('asset_approval', 'APPROVED')->where('disposal_status', 'AVAILABLE')->orderBy('id', 'desc')->paginate(10);
 
         return view('asset.index', ['items' => $items, 'user' => $user]);
     }

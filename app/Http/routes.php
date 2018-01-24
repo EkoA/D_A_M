@@ -10,6 +10,11 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+Route::get('/items/department/{id}', [
+	'uses' => 'ItemController@department',
+	'as' => 'items.department'
+]);
+
 Route::get('/users/email', [
 	'uses' => 'UserController@sendEmailReminder',
 	'as' => 'emails.reminder'
@@ -41,7 +46,7 @@ Route::get('/orders/sent/', [
 	'as' => 'orders.sent'
 ]);
 
-Route::post('/orders/search/', [
+Route::get('/orders/search/', [
 	'uses' => 'OrderController@search',
 	'as' => 'orders.search'
 ]);
@@ -96,6 +101,11 @@ Route::get('/users/viewstaff/', [
 Route::get('/users/resetpassword/{id}', [
 	'uses' => 'UserController@resetpassword',
 	'as' => 'users.resetpassword'
+]);
+
+Route::get('/users/blockuser/{id}', [
+	'uses' => 'UserController@blockuser',
+	'as' => 'users.blockuser'
 ]);
 
 Route::get('/users/activatemail/{id}', [

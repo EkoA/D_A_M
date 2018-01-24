@@ -37,7 +37,7 @@ class OrderController extends Controller
             return view('errors.404');
         }
 
-       $orders = Order::all();
+       $orders = Order::orderBy('id', 'desc')->paginate(10);
 
        return view('orders.index')->with('orders', $orders);
     }
@@ -104,7 +104,7 @@ class OrderController extends Controller
         //$pers = DB::table('orders')->select('department')->where('made_by', $order->made_by)->where('made_by', $order->made_by)->first();
         //return $pers->department;
 
-        $hod = DB::table('users')->where('role_id', 'HOD')->where('department', $order->department)->first();
+        $hod = DB::table('users')->where('role_id', 'HOD')->where('department', $order->department)->where('account_activated', 'YES')->first();
 
         //$hpp = DB::table('users')->select('name')->where('role_id', 'HOD')->where('department', $pers->department)->first();
         /*$email = $hod->email;
@@ -185,14 +185,14 @@ class OrderController extends Controller
         }
 
         $order = Order::find($id);
-            
+
         $dept = Auth::user()->department;
-        
+
         $hod = DB::table('users')->where('role_id', 'HOD')->where('department', $dept)->first();
-        
-        dd("$hod");
-        
-        return view('orders.show', ['order'=>$order, '']);
+
+        //dd("$hod");
+
+        return view('orders.show', ['order'=>$order]);
     }
 
     public function orderdecision(Request $request, $id)
@@ -346,7 +346,7 @@ class OrderController extends Controller
 
         return redirect()->route('orders.create');
     }
-    
+
         /**
      * Remove the specified resource from storage.
      *
@@ -388,12 +388,11 @@ class OrderController extends Controller
             return view('errors.404');
         }
 
-        $orders = DB::table('orders')->where('admin_approval', 'PENDING')->where('finance_approval', 'APPROVED')->get();
+        $orders = DB::table('orders')->where('admin_approval', 'PENDING')->where('finance_approval', 'APPROVED')->orderBy('id', 'desc')->paginate(10);
 
         return view('orders.pending', ['orders' => $orders]);
     }
-    
-    
+
     public function reports()
     {
       if (Auth::guest())
@@ -414,8 +413,7 @@ class OrderController extends Controller
 
       return view('orders.reports', ['classifications'=>$classifications, 'departments'=>$departments]);
     }
-    
-    
+
     public function reportgen(Request $request)
     {
       if (Auth::guest())
@@ -435,7 +433,7 @@ class OrderController extends Controller
       if(!empty($request->department)){
       $department = $request->department;
       }else { $department = "";}
-        
+
       //dd($department);
 
       if(!empty($request->amount_from)){
@@ -455,7 +453,7 @@ class OrderController extends Controller
       }else{ $dateto = "";}
 
       $orders = Order::select([
-        'order_item', 'quantity', 'department', 'made_by', 'hod_approval', 'finance_approval', 'admin_approval', 'cost'   
+        'order_item', 'quantity', 'department', 'made_by', 'hod_approval', 'finance_approval', 'admin_approval', 'cost', 'created_at'
       ]);
                     if(!empty($department) && $department != "None"){
                     $orders = $orders->where('department', "$department");
@@ -471,7 +469,7 @@ class OrderController extends Controller
                     ->whereBetween('depreciation', [$deprefrom, $depreto])
                     ->get();*/
       $orders = $orders->get();
-      
+
 
       if(empty($orders[0]))
       {
@@ -494,7 +492,7 @@ class OrderController extends Controller
             $excel->sheet('Sheetname', function($sheet) use($orders)
             {
                 $sheet->fromArray($orders, null, 'A1', false, false)->prependRow([
-                  'Item', 'Quantity', 'Department', 'Initiator', 'H.O.D Approval', 'Finance Approval', 'MD Approval', 'Amount(Per item)', 'Total'
+                  'Item', 'Quantity', 'Department', 'Initiator', 'H.O.D Approval', 'Finance Approval', 'MD Approval', 'Amount(Per item)', 'Date Requested'
                 ]);
                 /*foreach($sheet->rows as $row){
                 $row->appendCell('Some custom data');
@@ -502,7 +500,7 @@ class OrderController extends Controller
             });
           })->export('xls');
     }
-        
+
     public function sent()
     {
         if (Auth::guest())
@@ -516,7 +514,7 @@ class OrderController extends Controller
             return view('errors.404');
         }
 
-        $orders = DB::table('orders')->where('department', 'Software Development')->get();
+        $orders = DB::table('orders')->where('department', 'Software Development')->orderBy('id', 'desc')->paginate(10);
 
         return view('orders.sent', ['orders' => $orders]);
 
@@ -540,28 +538,30 @@ class OrderController extends Controller
       return view('');
     }
 
-    public function search(Request $req)
+    public function search(Request $request)
     {
+      //return "Hello";
         if (Auth::guest())
         {
            return view('auth.login');
         }
-                //checking user role
+
+        //checking user role
         $user = Auth::user()->role_id;
-        if($user!="ADMIN")
+        if($user!="ADMIN" && $user!="HOF")
         {
             return view('errors.404');
         }
 
         // search
         $ords = null;
-        if($req->has('search')&&($req->get('search')!=null))
+        if($request->has('search')&&($request->get('search')!=null))
         {
-            $search = $req->get('search');
+            $search = $request->get('search');
             $ords=Order::where('id','like','%'.$search.'%')
                             ->orWhere('order_item', 'like', '%'.$search.'%')
-                            ->orderBy('id')
-                            ->paginate(20);
+                            ->orderBy('id', 'desc')
+                            ->paginate(10);
         }
         else
         {

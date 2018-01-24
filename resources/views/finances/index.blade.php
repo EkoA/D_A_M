@@ -104,7 +104,6 @@ header("Refresh: 30; URL=$url1");
  <div class="col-sm-2"></div>
 		<div class="col-sm-8">
 				<div class="card-box table-responsive">
-
 					<table id="datatable" class="table table-hover">
 						Total asset cost based on Departments
 					<hr>
@@ -118,9 +117,8 @@ header("Refresh: 30; URL=$url1");
 							<?php
 									//$tamount = $dep + $tamount;
 							?>
-
 											@for($i = 0; $i < count($department); $i++)
-												<tr>
+												<tr onclick="document.location='{{route('items.department',$department[$i]->id)}}'" style="cursor:hand;" >
 													<td>{{$department[$i]->dept_name}}</td>
 													<td>&#8358; {{ number_format($depart[$i])}}</td>
 												</tr>
@@ -128,8 +126,7 @@ header("Refresh: 30; URL=$url1");
 							@endif
 
 						</table>
-
-</div>
+				</div>
 </div>
 
 <div class="row">

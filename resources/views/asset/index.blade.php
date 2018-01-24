@@ -45,6 +45,7 @@
 					@endforeach
 					@endif
 					</table>
+					<div class="text-center">{!! $items->links(); !!}</div>
 
 					</div>
 				</div>

@@ -83,6 +83,7 @@ header("Refresh: 30; URL=$url1");
 	@endforeach
 	@endif
 	</table>
+	<div class="text-center">{!! $orders->links(); !!}</div>
 			<!--<a href="{{route('orders.create')}}">Add New order</a>-->
 		</div>
 	</div>

@@ -44,6 +44,7 @@
 	@endforeach
 	@endif
 </table>
+<div class="text-center">{!! $orders->links(); !!}</div>
 
 <form class="form-horizontal" role="form" method="POST" action="{{ route('finances.generateReport') }}">
 	{{ csrf_field() }}

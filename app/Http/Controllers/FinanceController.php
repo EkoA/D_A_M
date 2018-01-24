@@ -58,12 +58,13 @@ class FinanceController extends Controller
                     $departments = Department::all();
 
 
+
                     $list_depart = [];
                     foreach ($departments as $dept)
                     {
                       $depart = Item::select([
                         'id', 'asset_number', 'item', 'department','amount'
-                      ])->where('department', $dept->dept_name)
+                      ])->where('department', $dept->dept_name)->where('asset_approval', 'APPROVED')->where('disposal_status', 'AVAILABLE')
                       ->sum('amount');
 
                       /*$keys = $depart;
@@ -72,7 +73,7 @@ class FinanceController extends Controller
                     }
                     //dd($a);
 
-        $orders = DB::table('orders')->where('admin_approval', 'PENDING')->where('hod_approval', 'APPROVED')->where('finance_approval', 'PENDING')->get();
+        $orders = DB::table('orders')->where('admin_approval', 'PENDING')->where('hod_approval', 'APPROVED')->where('finance_approval', 'PENDING')->orderBy('id', 'desc')->get();
 
         return view('finances.index', ['corders' => $corders, 'items' => $citems, 'cost' => $itemsco, 'val' => $itemsva, 'orders' => $orders, 'depart'=> $list_depart, 'department'=>$departments]);
     }
@@ -114,7 +115,7 @@ class FinanceController extends Controller
             return view('errors.404');
         }
 
-        $orders = DB::table('orders')->where('admin_approval', 'PENDING')->where('hod_approval', 'APPROVED')->where('finance_approval', 'PENDING')->get();
+        $orders = DB::table('orders')->where('admin_approval', 'PENDING')->where('hod_approval', 'APPROVED')->where('finance_approval', 'PENDING')->orderBy('id', 'desc')->paginate(10);
 
         return view('finances.pending', ['orders' => $orders]);
     }
@@ -133,7 +134,9 @@ class FinanceController extends Controller
             return view('errors.404');
         }
 
-        $orders = DB::table('orders')->where('admin_approval', 'APPROVED')->get();
+        $orders = DB::table('orders')->where('admin_approval', 'APPROVED')->orderBy('id', 'desc')->paginate(10);
+
+        //$orders = Order::
 
         return view('finances.approved', ['orders' => $orders]);
     }

@@ -1,4 +1,11 @@
- @extends('layouts.orders')
+@if(Auth::check())
+        @if(Auth::user()->role_id == 'ADMIN')
+				<?php $layout = 'layouts.orders'; ?>
+        @else
+        <?php $layout = 'layouts.finances'; ?>
+		@endif
+@endif
+@extends($layout)
 @section('title')
 	Search
 @stop
@@ -40,7 +47,6 @@
 	@foreach($ords as $order)
 
 			<?php
-
 				$fstatus = "{$order->finance_approval}";
 				if($fstatus == "PENDING")
 				{
@@ -69,14 +75,13 @@
 				{
 					$acol = "green";
 				}
-
 				//echo $fstatus;
-
 			?>
 			<tr onclick="document.location='{{route('orders.show', $order->id)}}'" style="cursor:hand"><td>{{$order->id}}</td><td>{{$order->order_item}}&nbsp;</td><td style="color:<?php //echo $acol; ?>;">&nbsp;{{$order->admin_approval}}&nbsp;</td><td style="color:<?php //echo $fcol; ?>;" >&nbsp;{{$order->finance_approval}}&nbsp;&nbsp;</td><td>&nbsp;{{$order->hod_approval}}&nbsp;</td></tr>
 	@endforeach
 	@endif
 	</table>
+  <div class="text-center">{!! $ords->links(); !!}</div>
 			<!--<a href="{{route('orders.create')}}">Add New order</a>-->
 		</div>
 	</div>

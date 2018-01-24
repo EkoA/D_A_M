@@ -614,7 +614,7 @@ textarea.form-control {
   background-color: #36404a;
   border: 2px solid rgba(238, 238, 238, 0.1);
   border-radius: 4px;
-  color: #000;
+  color: #fff;
   height: 36px;
   max-width: 100%;
   -webkit-box-shadow: none;
@@ -630,7 +630,7 @@ textarea.form-control {
   -webkit-box-shadow: none;
   box-shadow: none;
   outline: 0 !important;
-  color: #000;
+  color: #fff;
 }
 .form-control[disabled],
 .form-control[readonly],

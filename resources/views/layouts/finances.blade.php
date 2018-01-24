@@ -62,7 +62,7 @@
 ">&nbsp;&nbsp;&nbsp;Manage Vendors</a></li>
                   </ul>
 
-                  <form role="search" class="navbar-left app-search pull-left hidden-xs" method="get" action="{{ route('orders.search') }}">
+                  <form role="search" class="navbar-left app-search pull-left hidden-xs" method="GET" action="{{ route('orders.search') }}">
                        <input type="text" placeholder="Search..." class="form-control" name="search" required>
                        <a href=""><i class="fa fa-search"></i></a>
                   </form>

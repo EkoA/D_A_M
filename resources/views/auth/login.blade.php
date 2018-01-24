@@ -9,6 +9,15 @@
                      <div align="center"> <img src="{{ asset('img/dream_logo_default.png') }}" style="height:auto; width:220px;"></div>
                     </div>
 
+                    <?php
+                    //  echo $msg;
+                        if(isset($_COOKIE['cooks']))
+                        {
+                          echo "<center><span style='color:red;'>".$_COOKIE['cooks']."</span></center>";
+                          echo "</br>";
+                          setcookie("cooks", "", time() - 3600);
+                        }
+                    ?>
                 <div class="panel-body">
                   <form class="form-horizontal m-t-20" method="POST" action="{{ url('/login') }}">
                     {{ csrf_field() }}

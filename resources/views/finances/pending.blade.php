@@ -50,6 +50,7 @@ header("Refresh: 30; URL=$url1");
 	@endforeach
 	@endif
 </table>
+<div class="text-center">{!! $orders->links(); !!}</div>
 
 </div>
 </div>

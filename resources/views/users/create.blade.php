@@ -105,7 +105,7 @@
                             <span>
                                  <select name ="role_id" id="role_id" class="form-control" >
                                   <option value="ADMIN">ADMIN</option>
-                                  <option value="HOF">HEAD OF FINANCE</option>
+                                  <option value="HOF">CONTROL</option>
                                   <option value="HOD">H.O.D</option>
                                   <option value="BASIC">BASIC</option>
                                 </select>

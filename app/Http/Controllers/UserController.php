@@ -53,7 +53,7 @@ class UserController extends Controller
           }
         }
 
-        $users = User::all();
+        $users = User::orderBy('id', 'desc')->paginate(10);
 
         return view('users.index')->with('users', $users);
     }
@@ -410,7 +410,7 @@ class UserController extends Controller
           }
         }
 
-        $users = User::all();
+        $users = User::orderBy('id', 'desc')->paginate(10);
         return view('users.viewstaff', ['users' => $users]);
     }
 
@@ -473,6 +473,25 @@ class UserController extends Controller
         return redirect()->route('users.create', ['email' => $email, 'password' => $genpa,  'ret'=>1]);
 
         //return view('users.create')->with('email', $email, 'password', $genpa);
+    }
+
+    public function blockuser($id)
+    {
+      $user = User::find($id);
+      $acct = $user->account_activated;
+      if($acct != "BLOCK")
+      {
+        $user->account_activated = "BLOCK";
+        $msg = "Successfully Blocked User";
+      }
+      else if($acct == "BLOCK")
+      {
+        $user->account_activated = "YES";
+        $msg = "Successfully Unblocked User";
+      }
+      $user->save();
+
+      return view("users.show", ['msg'=>$msg, 'user'=>$user]);
     }
 
     public function create()
